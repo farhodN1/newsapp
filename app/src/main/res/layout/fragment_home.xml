@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <!-- Title at the top -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="news.com"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="16dp" />
+
+    <!-- Sub-menu for categories -->
+    <HorizontalScrollView
+        android:id="@+id/category_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/submenuContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnAllNews"
+                style="@style/SubmenuItem"
+                android:text="All News"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/btnBusiness"
+                style="@style/SubmenuItem"
+                android:text="Business"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/btnPolitics"
+                style="@style/SubmenuItem"
+                android:text="Politics"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/btnTech"
+                style="@style/SubmenuItem"
+                android:text="Tech"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/btnScience"
+                style="@style/SubmenuItem"
+                android:text="Science"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Slideshow -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager_slideshow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/category_menu"
+        android:layout_weight="0.23"
+        app:layout_collapseMode="parallax"
+        android:layout_margin="8dp"/>
+
+    <!-- Latest News -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_latest_news"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_pager_slideshow"
+        android:layout_weight="0.77"
+        android:padding="8dp" />
+
+</RelativeLayout>
