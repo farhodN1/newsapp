@@ -123,7 +123,6 @@ class HomeFragment : Fragment() {
                 viewModel.addArticleToFavorites(article)
                 Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
             },onItemClicked = { articleUrl ->
-                // Handle navigation to NewsFragment
                 val bundle = Bundle().apply {
                     putString("url", articleUrl)
                 }
