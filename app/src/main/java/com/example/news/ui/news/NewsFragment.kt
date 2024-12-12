@@ -41,7 +41,7 @@ class NewsFragment : Fragment() {
         val newsUrl = arguments?.getString("url")
 
         if (newsUrl != null) {
-            viewModel.loadNews(newsUrl).observe(viewLifecycleOwner, Observer { newsArticle ->
+            viewModel.loadNews(newsUrl).observe(viewLifecycleOwner) { newsArticle ->
                 newsArticle?.let {
                     binding.newsTitle.text = it.title
                     binding.newsPublishedAt.text = getRelativeTime(it.publishedAt)
@@ -57,7 +57,7 @@ class NewsFragment : Fragment() {
                         Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show()
                     }
                 }
-            })
+            }
         }
     }
 

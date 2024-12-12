@@ -1,5 +1,6 @@
 package com.example.news.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,13 +17,7 @@ class HomeViewModel(
     private val newsRepository: NewsRepository
 ) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home fragment"
-    }
-    val text: LiveData<String> = _text
-
     val slideshowData: LiveData<List<NewsArticle>> = newsRepository.getSlideshowItems()
-
     val latestNews: Flow<PagingData<NewsArticle>> = newsRepository.getNewsArticles()
         .cachedIn(viewModelScope)
 
@@ -32,10 +27,14 @@ class HomeViewModel(
         }
     }
 
-    fun fetchNews() {
+    fun fetchNews(category: String) {
         viewModelScope.launch {
-            newsRepository.fetchAndSaveNews("general", 1)
+            newsRepository.fetchAndSaveNews(category)
         }
+    }
+
+    suspend fun clearDatabase(){
+        newsRepository.clearDatabase()
     }
 }
 

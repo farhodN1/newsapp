@@ -8,7 +8,7 @@ import com.example.news.data.db.NewsArticle
 class SearchViewModel: ViewModel() {
     suspend fun getNews(searchTerm: String): List<NewsArticle>? {
         Log.d(searchTerm, searchTerm)
-        val response = RetrofitInstance.api.searchNews(searchTerm, 2, "b6a9ffac377b457eb67d055eb0d8b17a")
+        val response = RetrofitInstance.api.searchNewsForSearch(searchTerm, 2, "b6a9ffac377b457eb67d055eb0d8b17a")
         Log.i("status", response.isSuccessful.toString())
         return response.body()?.articles
     }

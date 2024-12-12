@@ -16,6 +16,34 @@ import kotlinx.coroutines.withContext
 
 class NewsRepository(private val api: NewsApi, private val newsDao: NewsDao) {
 
+    // Network
+    suspend fun fetchAndSaveNews(category: String) {
+        Log.i("category", category)
+        val response = api.searchNews(BuildConfig.API_KEY, category)
+        if (response.isSuccessful) {
+            response.body()?.articles?.let { articles ->
+                val newsArticles = articles.map { article ->
+                    NewsArticle(
+                        title = article.title,
+                        description = article.description,
+                        url = article.url,
+                        urlToImage = article.urlToImage,
+                        publishedAt = article.publishedAt
+                    )
+                }
+                // Insert only if the article is not already in the database
+                withContext(Dispatchers.IO) {
+                    newsArticles.forEach { newsArticle ->
+                        if (newsDao.getArticleByUrl(newsArticle.url) == null) {
+                            newsDao.insertAll(listOf(newsArticle))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Database
     fun getSlideshowItems(): LiveData<List<NewsArticle>> {
         return newsDao.getSlideshowItems()
     }
@@ -47,50 +75,6 @@ class NewsRepository(private val api: NewsApi, private val newsDao: NewsDao) {
     fun getNewsPagingSource(): PagingSource<Int, NewsArticle> {
         return newsDao.getNewsPagingSource()
     }
-
-    suspend fun fetchAndSaveNews(q: String, page: Int) {
-        val response = api.searchNews(q, page, BuildConfig.API_KEY)
-        if (response.isSuccessful) {
-            response.body()?.articles?.let { articles ->
-                val newsArticles = articles.map { article ->
-                    NewsArticle(
-                        title = article.title,
-                        description = article.description,
-                        url = article.url,
-                        urlToImage = article.urlToImage,
-                        publishedAt = article.publishedAt
-                    )
-                }
-                // Insert only if the article is not already in the database
-                withContext(Dispatchers.IO) {
-                    newsArticles.forEach { newsArticle ->
-                        if (newsDao.getArticleByUrl(newsArticle.url) == null) {
-                            newsDao.insert(newsArticle)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    suspend fun searchNews(q: String, page: Int){
-        val response = api.searchNews(q, page, BuildConfig.API_KEY)
-        if (response.isSuccessful) {
-            response.body()?.articles?.let { articles ->
-                val newsArticles = articles.map { article ->
-                    NewsArticle(
-                        title = article.title,
-                        description = article.description,
-                        url = article.url,
-                        urlToImage = article.urlToImage,
-                        publishedAt = article.publishedAt
-                    )
-                    }
-            }
-        }
-    }
-
-
 
     suspend fun updateNewsArticle(newsArticle: NewsArticle) {
         newsDao.updateNewsArticle(newsArticle)
