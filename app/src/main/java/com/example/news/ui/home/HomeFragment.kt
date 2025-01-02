@@ -1,6 +1,5 @@
 package com.example.news.ui.home
 
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +21,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.news.R
 import com.example.news.adapter.SlideshowAdapter
 import com.example.news.adapters.NewsAdapter
-import com.example.news.data.api.RetrofitInstance.api
-import com.example.news.data.db.NewsDatabase
-import com.example.news.data.repository.NewsRepository
 import com.example.news.databinding.FragmentHomeBinding
 import com.example.news.utils.NetworkUtils.isInternetAvailable
 import kotlinx.coroutines.flow.collectLatest
@@ -35,7 +31,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
@@ -43,11 +39,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Instantiate the database and repository
-        val newsDao = NewsDatabase.getDatabase(requireContext()).getNewsDao()
-        val newsRepository = NewsRepository(api, newsDao)
-        val factory = HomeViewModelFactory(newsRepository)
-        viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
@@ -99,7 +90,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     fun changeCategory(category: String){
         if(isInternetAvailable(requireContext())){
             if(category == "All News") viewModel.fetchNews("general")
@@ -107,6 +97,7 @@ class HomeFragment : Fragment() {
             else viewModel.fetchNews(category.lowercase())
         }
     }
+
     private fun setupSlideShow() {
         val viewPager: ViewPager2 = binding.viewPagerSlideshow
         val adapter = SlideshowAdapter(

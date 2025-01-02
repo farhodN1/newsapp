@@ -9,26 +9,13 @@ import com.example.news.data.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel(
-    private val repository: NewsRepository
-) : ViewModel() {
-
+class FavoritesViewModel : ViewModel() {
+    val repository = NewsRepository()
     val favorites: Flow<PagingData<NewsArticle>> = repository.getFavoriteArticles()
 
     fun removeFromFavorites(url: String) {
         viewModelScope.launch {
             repository.removeFavoriteArticle(url)
         }
-    }
-}
-class FavoritesViewModelFactory(
-    private val newsRepository: NewsRepository
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
-            return FavoritesViewModel(newsRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

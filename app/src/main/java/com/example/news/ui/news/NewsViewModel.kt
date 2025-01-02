@@ -11,10 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NewsViewModel(
-    private val newsRepository: NewsRepository
-) : ViewModel() {
-
+class NewsViewModel : ViewModel() {
+    val newsRepository = NewsRepository()
     fun loadNews(url: String): LiveData<NewsArticle?> {
         val result = MutableLiveData<NewsArticle?>()
         viewModelScope.launch(Dispatchers.IO) {
@@ -29,16 +27,5 @@ class NewsViewModel(
         viewModelScope.launch {
             newsRepository.addArticleToFavorites(article)
         }
-    }
-}
-class NewsViewModelFactory(
-    private val newsRepository: NewsRepository
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
-            return NewsViewModel(newsRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

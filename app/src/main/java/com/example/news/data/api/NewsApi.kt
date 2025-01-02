@@ -1,6 +1,5 @@
 package com.example.news.data.api
 
-import androidx.compose.foundation.pager.PageSize
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

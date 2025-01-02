@@ -13,10 +13,8 @@ import com.example.news.data.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
-    private val newsRepository: NewsRepository
-) : ViewModel() {
-
+class HomeViewModel : ViewModel() {
+    val newsRepository = NewsRepository()
     val slideshowData: LiveData<List<NewsArticle>> = newsRepository.getSlideshowItems()
     val latestNews: Flow<PagingData<NewsArticle>> = newsRepository.getNewsArticles()
         .cachedIn(viewModelScope)
@@ -35,17 +33,5 @@ class HomeViewModel(
 
     suspend fun clearDatabase(){
         newsRepository.clearDatabase()
-    }
-}
-
-class HomeViewModelFactory(
-    private val newsRepository: NewsRepository
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(newsRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

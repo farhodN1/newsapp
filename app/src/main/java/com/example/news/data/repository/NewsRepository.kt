@@ -1,5 +1,6 @@
 package com.example.news.data.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.Pager
@@ -8,13 +9,20 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import com.example.news.BuildConfig
 import com.example.news.data.api.NewsApi
+import com.example.news.data.api.RetrofitInstance
 import com.example.news.data.db.NewsDao
 import com.example.news.data.db.NewsArticle
+import com.example.news.data.db.NewsDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class NewsRepository(private val api: NewsApi, private val newsDao: NewsDao) {
+class NewsRepository {
+
+    private val api: NewsApi by lazy { RetrofitInstance.api }
+    private val newsDao: NewsDao by lazy {
+        NewsDatabase.getDatabase().getNewsDao()
+    }
 
     // Network
     suspend fun fetchAndSaveNews(category: String) {
@@ -48,7 +56,7 @@ class NewsRepository(private val api: NewsApi, private val newsDao: NewsDao) {
         return newsDao.getSlideshowItems()
     }
 
-    suspend fun getArticleByUrl(url: String): NewsArticle? {
+    fun getArticleByUrl(url: String): NewsArticle? {
         return newsDao.getArticleByUrl(url)
     }
 
